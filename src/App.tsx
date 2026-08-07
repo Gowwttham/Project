@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Flame, TrendingUp, Upload, Search, HelpCircle, Lock, Bell, Shield, LogOut, User as UserIcon } from 'lucide-react';
-import { supabase, type Meme, type UploadRequest } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured, type Meme, type UploadRequest } from '@/lib/supabase';
 import type { Session } from '@supabase/supabase-js';
 import MemeCard from '@/components/MemeCard';
 import UploadModal from '@/components/UploadModal';
@@ -140,6 +140,30 @@ export default function App() {
       alert('Link copied to clipboard!');
     }
   };
+
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-[#0b0d12] px-6 text-center text-white">
+        <div className="max-w-md">
+          <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 text-black">
+            <Flame size={32} strokeWidth={2.5} />
+          </div>
+          <h1 className="mt-6 text-2xl font-extrabold tracking-tight">MemeNadu needs setup</h1>
+          <p className="mt-3 text-sm leading-relaxed text-white/60">
+            The app can't reach its database right now because the connection details
+            aren't configured. Add the following keys to your environment, then reload:
+          </p>
+          <pre className="mt-5 overflow-x-auto rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left text-xs text-white/70">
+{`VITE_SUPABASE_URL=your-project-url
+VITE_SUPABASE_ANON_KEY=your-anon-key`}
+          </pre>
+          <p className="mt-4 text-xs text-white/40">
+            You can find these in your Supabase project under Settings &gt; API.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (profileUserId) {
     return (
